@@ -2,7 +2,7 @@
   "name": "fifa-resultat",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://guillaumesere.github.io/fifa-resultat",
+  "homepage": "https://guillaumesere.github.io/fifa-score/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
