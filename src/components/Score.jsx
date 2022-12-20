@@ -55,8 +55,7 @@ const Score = () => {
                     <DatePicker
                         selected={date}
                         onChange={handleChange}
-                        minDate={new Date(new Date().getFullYear(), 10, 21)}
-                        maxDate={new Date(new Date().getFullYear(), 11, 18)}
+                     
                     />
                     {data?.data?.matches.map(({ Home, Away }) =>
 
