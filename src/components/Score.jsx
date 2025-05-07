@@ -2,96 +2,119 @@ import React, { useEffect, useState } from 'react'
 import DatePicker from "react-datepicker";
 import './score.css';
 import "react-datepicker/dist/react-datepicker.css";
-import API from '../api'
+import { fetchMatches } from '../api'
 
 const Score = () => {
-
     const [data, setData] = useState()
     const [date, setDate] = useState(new Date())
+    const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-
         const currentDate = new Date().toISOString().split('T')[0]
-
-        API.get(`schedule`, {
-            params: { date: `${currentDate}`, utc_offset: '8' },
-            headers: {
-                'X-RapidAPI-Key': `${process.env.REACT_APP_RAPID_API_KEY}`,
-                'X-RapidAPI-Host': 'fifa-2022-schedule-and-stats.p.rapidapi.com'
-            }
-        }).then((res) => {
-            setData(res)
-        }).catch((err) => {
-            console.log(err)
-        })
+        getCompetitions(currentDate)
     }, [])
+
+    const getCompetitions = async (selectedDate) => {
+        try {
+            setLoading(true)
+            setError(null)
+            const result = await fetchMatches(selectedDate, selectedDate)
+            setData(result)
+        } catch (err) {
+            console.error('Erreur:', err)
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
 
     const handleChange = (event) => {
         setDate(event)
         const selectedDate = event.toISOString().split('T')[0]
-
-        API.get(`schedule`, {
-            params: { date: `${selectedDate}`, utc_offset: '8' },
-            headers: {
-                'X-RapidAPI-Key': `${process.env.REACT_APP_RAPID_API_KEY}`,
-                'X-RapidAPI-Host': 'fifa-2022-schedule-and-stats.p.rapidapi.com'
-            }
-        }).then((res) => {
-            setData(res)
-        }).catch((err) => {
-            console.log(err)
-        })
+        getCompetitions(selectedDate)
     }
 
     return (
         <div className='fifa'>
-            <div className="terrain"></div>
-            <div className="terrain-center"></div>
             <div className="container">
+                <div className="header-section">
+                    <h1>Compétitions Football</h1>
+                    <div className="date-picker-container">
+                        <div className="choice-date">Choisissez une date:</div>
+                        <DatePicker
+                            selected={date}
+                            onChange={handleChange}
+                            className="custom-datepicker"
+                        />
+                    </div>
+                </div>
 
-                <div className="match">
-                    <p>Résultat des matchs</p>
-                    <div className="choice-date">Choisissez une date:</div>
-                    <DatePicker
-                        selected={date}
-                        onChange={handleChange}
-                     
-                    />
-                    {data?.data?.matches.map(({ Home, Away }) =>
+                {loading && (
+                    <div className="loading">
+                        <h4>Chargement...</h4>
+                    </div>
+                )}
 
-                        <div className="match-content" key={Home?.IdCountry}>
-                            <div className="column">
+                {error && (
+                    <div className="error-message">
+                        <h4>Erreur: {error}</h4>
+                    </div>
+                )}
 
-                                <div className="team">
-                                    <h2 className="team-name">{Home?.ShortClubName === undefined ? "Undeterminded" : Home?.ShortClubName}</h2>
+                <div className="competitions-grid">
+                    {!loading && !error && data?.competitions?.map((competition) => (
+                        <div className="competition-card" key={competition.id}>
+                            <div className="card-header">
+                                {competition.emblem && (
+                                    <img 
+                                        src={competition.emblem} 
+                                        alt={`Logo ${competition.name}`} 
+                                        className="competition-emblem"
+                                    />
+                                )}
+                                <h2 className="competition-name">{competition.name}</h2>
+                            </div>
+                            
+                            <div className="card-body">
+                                <div className="competition-info">
+                                    <p className="competition-type">
+                                        <span className="label">Type:</span> {competition.type}
+                                    </p>
+                                    <p className="competition-area">
+                                        <span className="label">Pays:</span> {competition.area.name}
+                                    </p>
+                                    <p className="competition-code">
+                                        <span className="label">Code:</span> {competition.code || 'N/A'}
+                                    </p>
+                                </div>
+
+                                <div className="season-info">
+                                    <h3>Saison en cours</h3>
+                                    <p>
+                                        <span className="label">Début:</span> {new Date(competition.currentSeason.startDate).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                        <span className="label">Fin:</span> {new Date(competition.currentSeason.endDate).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                        <span className="label">Journée:</span> {competition.currentSeason.currentMatchday || 'N/A'}
+                                    </p>
                                 </div>
                             </div>
-                            <div className="column">
-                                <div className="match-details">
 
-                                    <div className="match-score">
-                                        <span className="match-score-number match-score-number--leading">{Home?.Score}</span>
-                                        <span className="match-score-divider">:</span>
-                                        <span className="match-score-number">{Away?.Score}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="column">
-                                <div className="team">
-                                    <h2 className="team-name">{Away?.ShortClubName === undefined ? "Undeterminded" : Away?.ShortClubName}</h2>
-                                </div>
+                            <div className="card-footer">
+                                <span className="plan-badge">{competition.plan}</span>
                             </div>
                         </div>
-
-                    )}
-                    {data?.data?.matches.length === 0 ?
-                        <div>
-                            <h4 className='no-match'>Pas de match ce jour</h4>
-                        </div> : ""
-                    }
-
+                    ))}
                 </div>
+
+                {!loading && !error && (!data?.competitions || data.competitions.length === 0) && (
+                    <div className="no-data">
+                        <h4>Pas de compétitions disponibles</h4>
+                    </div>
+                )}
             </div>
         </div>
     )
