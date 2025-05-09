@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchTeamDetails } from '../api';
-import './squadDetails.css';
+import { fetchTeamSquadDetails } from '../api';
+import './teamDetails.css';
 
 const SquadDetails = () => {
     const { teamId } = useParams();
@@ -10,11 +10,11 @@ const SquadDetails = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const getTeamSquad = async () => {
+        const getSquadDetails = async () => {
             try {
                 setLoading(true);
-                const response = await fetchTeamDetails(teamId);
-                setTeamData(response);
+                const response = await fetchTeamSquadDetails(teamId);
+                setTeamData(response.team);
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -22,12 +22,33 @@ const SquadDetails = () => {
             }
         };
 
-        getTeamSquad();
+        getSquadDetails();
     }, [teamId]);
+
+    const getPositionInFrench = (position) => {
+        switch(position) {
+            case 'Goalkeeper': return 'Gardien';
+            case 'Defence': return 'Défenseur';
+            case 'Midfield': return 'Milieu';
+            case 'Offence': return 'Attaquant';
+            default: return position;
+        }
+    };
+
+    const calculateAge = (dateOfBirth) => {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    };
 
     if (loading) {
         return (
-            <div className="squad-details-container">
+            <div className="team-details-container">
                 <div className="loading">Chargement...</div>
             </div>
         );
@@ -35,80 +56,64 @@ const SquadDetails = () => {
 
     if (error) {
         return (
-            <div className="squad-details-container">
+            <div className="team-details-container">
                 <div className="error-message">Erreur: {error}</div>
             </div>
         );
     }
 
-    const team = teamData?.teams?.[0];
-
     return (
-        <div className="squad-details-container">
-            <div className="squad-header">
-                <Link to={`/fifa-score/team/${teamData?.competition?.id}`} className="back-button">
+        <div className="team-details-container">
+            <div className="team-details-header">
+                <Link to={`/fifa-score/team/${teamId}`} className="back-button">
                     ← Retour à l'équipe
                 </Link>
-                <div className="team-info">
-                    {team?.crest && (
+                <div className="team-header">
+                    {teamData?.crest && (
                         <img 
-                            src={team.crest} 
-                            alt={`Logo ${team.name}`}
+                            src={teamData.crest} 
+                            alt={`Logo ${teamData.name}`}
                             className="team-crest"
                         />
                     )}
-                    <h1>{team?.name}</h1>
+                    <h1>{teamData?.name || 'Effectif de l\'équipe'}</h1>
                 </div>
             </div>
 
-            <div className="squad-content">
-                <div className="squad-stats">
-                    <div className="stat-card">
-                        <span className="stat-label">Total Joueurs</span>
-                        <span className="stat-value">{team?.squad?.length || 0}</span>
-                    </div>
-                    <div className="stat-card">
-                        <span className="stat-label">Moyenne d'âge</span>
-                        <span className="stat-value">
-                            {team?.squad ? 
-                                (team.squad.reduce((acc, player) => acc + (player.age || 0), 0) / team.squad.length).toFixed(1) 
-                                : 'N/A'} ans
-                        </span>
-                    </div>
-                </div>
-
-                <div className="squad-sections">
-                    {['Gardien', 'Défenseur', 'Milieu', 'Attaquant'].map((position) => (
-                        <div key={position} className="position-section">
-                            <h2>{position}s</h2>
-                            <div className="players-grid">
-                                {team?.squad
-                                    ?.filter(player => {
-                                        const pos = player.position?.toLowerCase();
-                                        if (position === 'Gardien') return pos === 'goalkeeper';
-                                        if (position === 'Défenseur') return pos?.includes('back');
-                                        if (position === 'Milieu') return pos?.includes('midfield');
-                                        if (position === 'Attaquant') return pos?.includes('forward') || pos?.includes('striker');
-                                        return false;
-                                    })
+            <div className="team-details-content">
+                <div className="squad-section">
+                    {['Goalkeeper', 'Defence', 'Midfield', 'Offence'].map((position) => (
+                        <div key={position} className="position-group">
+                            <h4>{getPositionInFrench(position)}s</h4>
+                            <div className="squad-grid">
+                                {teamData?.squad
+                                    ?.filter(player => player.position === position)
                                     .map((player) => (
                                         <div key={player.id} className="player-card">
-                                            <div className="player-header">
-                                                <h3>{player.name}</h3>
-                                                <span className="player-number">#{player.shirtNumber || 'N/A'}</span>
+                                            <div className="player-info">
+                                                <h4>{player.name}</h4>
+                                                <span className="player-position">
+                                                    #{player.shirtNumber || 'N/A'}
+                                                </span>
                                             </div>
-                                            <div className="player-details">
-                                                <div className="detail-item">
-                                                    <span className="detail-label">Âge</span>
-                                                    <span className="detail-value">{player.age || 'N/A'}</span>
+                                            <div className="player-stats">
+                                                <div className="stat">
+                                                    <span className="stat-label">Âge</span>
+                                                    <span className="stat-value">
+                                                        {calculateAge(player.dateOfBirth)}
+                                                    </span>
                                                 </div>
-                                                <div className="detail-item">
-                                                    <span className="detail-label">Nationalité</span>
-                                                    <span className="detail-value">{player.nationality || 'N/A'}</span>
+                                                <div className="stat">
+                                                    <span className="stat-label">Nationalité</span>
+                                                    <span className="stat-value">
+                                                        {player.nationality || 'N/A'}
+                                                    </span>
                                                 </div>
-                                                <div className="detail-item">
-                                                    <span className="detail-label">Position</span>
-                                                    <span className="detail-value">{player.position || 'N/A'}</span>
+                                                <div className="stat">
+                                                    <span className="stat-label">Valeur</span>
+                                                    <span className="stat-value">
+                                                        {(player.marketValue / 1000000).toFixed(1)}M€
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

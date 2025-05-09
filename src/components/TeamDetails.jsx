@@ -68,8 +68,8 @@ const TeamDetails = () => {
                 <Link to="/fifa-score" className="back-button">
                     ← Retour aux compétitions
                 </Link>
-                <h1>{teamData?.competition?.name || 'Détails de la compétition'}</h1>
             </div>
+            <h1>{teamData?.competition?.name || 'Détails de la compétition'}</h1>
 
             <div className="team-details-content">
                 {teamData?.teams?.map((team) => (
@@ -101,46 +101,32 @@ const TeamDetails = () => {
                         </div>
 
                         <div className="squad-section">
-                            <h3>Effectif</h3>
-                            {['Goalkeeper', 'Defence', 'Midfield', 'Offence'].map((position) => (
-                                <div key={position} className="position-group">
-                                    <h4>{getPositionInFrench(position)}s</h4>
-                                    <div className="squad-grid">
-                                        {team.squad
-                                            ?.filter(player => player.position === position)
-                                            .map((player) => (
-                                                <div key={player.id} className="player-card">
-                                                    <div className="player-info">
-                                                        <h4>{player.name}</h4>
-                                                        <span className="player-position">
-                                                            #{player.shirtNumber || 'N/A'}
-                                                        </span>
-                                                    </div>
-                                                    <div className="player-stats">
-                                                        <div className="stat">
-                                                            <span className="stat-label">Âge</span>
-                                                            <span className="stat-value">
-                                                                {calculateAge(player.dateOfBirth)}
-                                                            </span>
-                                                        </div>
-                                                        <div className="stat">
-                                                            <span className="stat-label">Nationalité</span>
-                                                            <span className="stat-value">
-                                                                {player.nationality || 'N/A'}
-                                                            </span>
-                                                        </div>
-                                                        <div className="stat">
-                                                            <span className="stat-label">Valeur</span>
-                                                            <span className="stat-value">
-                                                                {(player.marketValue / 1000000).toFixed(1)}M€
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
+                            <Link 
+                                to={`/fifa-score/team/${team.id}/squad`}
+                                className="view-squad-button"
+                            >
+                                Voir l'effectif complet
+                            </Link>
+                            <div className="squad-grid">
+                                {team.squad?.map((player) => (
+                                    <div key={player.id} className="player-card">
+                                        <div className="player-info">
+                                            <h4>{player.name}</h4>
+                                            <span className="player-position">{player.position}</span>
+                                        </div>
+                                        <div className="player-stats">
+                                            <div className="stat">
+                                                <span className="stat-label">Âge</span>
+                                                <span className="stat-value">{player.age || 'N/A'}</span>
+                                            </div>
+                                            <div className="stat">
+                                                <span className="stat-label">Nationalité</span>
+                                                <span className="stat-value">{player.nationality || 'N/A'}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 ))}

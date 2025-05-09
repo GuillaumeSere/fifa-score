@@ -1,12 +1,10 @@
-// API functions for football data
-const API_KEY = 'VOTRE_CLE_API'; // Remplacez par votre clé API Football-Data.org
 const BASE_URL = 'https://api.football-data.org/v4';
 
 export const fetchMatches = async (dateFrom, dateTo) => {
     try {
         const response = await fetch(`${BASE_URL}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`, {
             headers: {
-                'X-Auth-Token': API_KEY
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
@@ -25,7 +23,7 @@ export const fetchTeamDetails = async (competitionId) => {
     try {
         const teamsResponse = await fetch(`${BASE_URL}/competitions/${competitionId}/teams`, {
             headers: {
-                'X-Auth-Token': API_KEY
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
@@ -48,7 +46,7 @@ export const fetchTeamSquad = async (teamId) => {
     try {
         const response = await fetch(`${BASE_URL}/teams/${teamId}`, {
             headers: {
-                'X-Auth-Token': API_KEY
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
@@ -78,7 +76,7 @@ export const fetchTeamSquadDetails = async (teamId) => {
     try {
         const response = await fetch(`${BASE_URL}/teams/${teamId}`, {
             headers: {
-                'X-Auth-Token': API_KEY
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
