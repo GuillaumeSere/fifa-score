@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/fifa-score/static/css/main.56cde100.css",
-    "main.js": "/fifa-score/static/js/main.cd03232d.js",
+    "main.css": "/fifa-score/static/css/main.c3415046.css",
+    "main.js": "/fifa-score/static/js/main.e4a939fa.js",
     "static/media/ballon2.png": "/fifa-score/static/media/ballon2.184087e7f83da221ac5a.png",
     "index.html": "/fifa-score/index.html",
-    "main.56cde100.css.map": "/fifa-score/static/css/main.56cde100.css.map",
-    "main.cd03232d.js.map": "/fifa-score/static/js/main.cd03232d.js.map"
+    "main.c3415046.css.map": "/fifa-score/static/css/main.c3415046.css.map",
+    "main.e4a939fa.js.map": "/fifa-score/static/js/main.e4a939fa.js.map"
   },
   "entrypoints": [
-    "static/css/main.56cde100.css",
-    "static/js/main.cd03232d.js"
+    "static/css/main.c3415046.css",
+    "static/js/main.e4a939fa.js"
   ]
 }
