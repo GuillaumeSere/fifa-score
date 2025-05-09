@@ -1,4 +1,5 @@
 const API_URL = "https://api.football-data.org/v4/competitions";
+const BASE_URL = "https://api.football-data.org/v4/teams";
 
 export const fetchMatches = async (dateFrom, dateTo) => {
     try {
@@ -48,7 +49,7 @@ export const fetchTeamDetails = async (competitionId) => {
         const teamsWithSquad = await Promise.all(
             teamsData.teams.map(async (team) => {
                 try {
-                    const squadResponse = await fetch(`${API_URL}/teams/${team.id}`, {
+                    const squadResponse = await fetch(`${BASE_URL}/${team.id}`, {
                         headers: {
                             'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
                         }
@@ -59,6 +60,7 @@ export const fetchTeamDetails = async (competitionId) => {
                     }
 
                     const squadData = await squadResponse.json();
+                    console.log(squadData)
                     return {
                         ...team,
                         squad: squadData.squad || []

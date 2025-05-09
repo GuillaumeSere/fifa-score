@@ -1,3 +1,4 @@
+// API functions for football data
 const API_KEY = 'VOTRE_CLE_API'; // Remplacez par votre clé API Football-Data.org
 const BASE_URL = 'https://api.football-data.org/v4';
 
@@ -22,7 +23,6 @@ export const fetchMatches = async (dateFrom, dateTo) => {
 
 export const fetchTeamDetails = async (competitionId) => {
     try {
-        // Récupérer les équipes de la compétition
         const teamsResponse = await fetch(`${BASE_URL}/competitions/${competitionId}/teams`, {
             headers: {
                 'X-Auth-Token': API_KEY
@@ -34,39 +34,66 @@ export const fetchTeamDetails = async (competitionId) => {
         }
 
         const teamsData = await teamsResponse.json();
-
-        // Pour chaque équipe, récupérer les détails des joueurs
-        const teamsWithSquad = await Promise.all(
-            teamsData.teams.map(async (team) => {
-                try {
-                    const squadResponse = await fetch(`${BASE_URL}/teams/${team.id}`, {
-                        headers: {
-                            'X-Auth-Token': API_KEY
-                        }
-                    });
-
-                    if (!squadResponse.ok) {
-                        throw new Error(`Erreur lors de la récupération de l'effectif de ${team.name}`);
-                    }
-
-                    const squadData = await squadResponse.json();
-                    return {
-                        ...team,
-                        squad: squadData.squad || []
-                    };
-                } catch (error) {
-                    console.error(`Erreur pour l'équipe ${team.name}:`, error);
-                    return {
-                        ...team,
-                        squad: []
-                    };
-                }
-            })
-        );
-
         return {
             competition: teamsData.competition,
-            teams: teamsWithSquad
+            teams: teamsData.teams
+        };
+    } catch (error) {
+        console.error('Erreur API:', error);
+        throw error;
+    }
+};
+
+export const fetchTeamSquad = async (teamId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/teams/${teamId}`, {
+            headers: {
+                'X-Auth-Token': API_KEY
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erreur lors de la récupération de l'effectif`);
+        }
+
+        const data = await response.json();
+        return {
+            team: {
+                id: data.id,
+                name: data.name,
+                crest: data.crest,
+                venue: data.venue,
+                founded: data.founded,
+                area: data.area,
+                squad: data.squad || []
+            }
+        };
+    } catch (error) {
+        console.error('Erreur API:', error);
+        throw error;
+    }
+};
+
+export const fetchTeamSquadDetails = async (teamId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/teams/${teamId}`, {
+            headers: {
+                'X-Auth-Token': API_KEY
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erreur lors de la récupération des détails de l\'effectif');
+        }
+
+        const data = await response.json();
+        return {
+            team: {
+                id: data.id,
+                name: data.name,
+                crest: data.crest,
+                squad: data.squad || []
+            }
         };
     } catch (error) {
         console.error('Erreur API:', error);
