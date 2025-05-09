@@ -28,7 +28,7 @@
 }
 .choice-date{
     position: absolute;
-    margin-top: -8rem;
+    margin-top: -7.5rem;
     margin-left: -12rem;
     font-size: 1.2rem;
     font-weight: 600;
@@ -40,7 +40,7 @@
 .react-datepicker-wrapper{
     position: absolute !important;
     display: block !important;
-    margin-top: -5rem;
+    margin-top: -4rem;
 }
 .react-datepicker__input-container input{
     margin-top: -5rem !important;
@@ -181,7 +181,6 @@
     left: 0;
     right: 0;
     background: rgba(0, 0, 0, 0.8);
-    padding: 1rem;
     z-index: 1000;
     text-align: center;
     margin-bottom: 2rem;
@@ -332,4 +331,22 @@
     .header-section h1 {
         font-size: 2rem;
     }
+}
+
+.view-teams-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.view-teams-button:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
 }

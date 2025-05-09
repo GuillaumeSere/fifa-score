@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import DatePicker from "react-datepicker";
+import { Link } from 'react-router-dom';
 import './score.css';
 import "react-datepicker/dist/react-datepicker.css";
 import { fetchMatches } from '../api'
@@ -101,10 +102,17 @@ const Score = () => {
                                         <span className="label">Journée:</span> {competition.currentSeason.currentMatchday || 'N/A'}
                                     </p>
                                 </div>
+
+                                <Link 
+                                    to={`/fifa-score/team/${competition.id}`} 
+                                    className="view-teams-button"
+                                >
+                                    Voir les équipes
+                                </Link>
                             </div>
 
                             <div className="card-footer">
-                                <span className="plan-badge">{competition.plan}</span>
+                                <span className="plan-badge">{competition.type}</span>
                             </div>
                         </div>
                     ))}

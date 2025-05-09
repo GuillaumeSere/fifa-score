@@ -1,40 +1,31 @@
-const API_URL = "https://api.football-data.org/v4/competitions";
+const API_KEY = 'VOTRE_CLE_API'; // Remplacez par votre clé API Football-Data.org
+const BASE_URL = 'https://api.football-data.org/v4';
 
 export const fetchMatches = async (dateFrom, dateTo) => {
     try {
-        console.log('Envoi de la requête à:', API_URL);
-        
-        const response = await fetch(API_URL, {
-            method: 'GET',
+        const response = await fetch(`${BASE_URL}/matches?dateFrom=${dateFrom}&dateTo=${dateTo}`, {
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
+                'X-Auth-Token': API_KEY
             }
         });
-        
-        console.log('Statut de la réponse:', response.status);
-        
+
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Réponse d\'erreur:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
+            throw new Error('Erreur lors de la récupération des matchs');
         }
-        
-        const data = await response.json();
-        console.log('Données reçues:', data);
-        return data;
+
+        return await response.json();
     } catch (error) {
-        console.error('Erreur détaillée:', error);
+        console.error('Erreur API:', error);
         throw error;
     }
 };
 
-
 export const fetchTeamDetails = async (competitionId) => {
     try {
         // Récupérer les équipes de la compétition
-        const teamsResponse = await fetch(`${API_URL}/${competitionId}/teams`, {
+        const teamsResponse = await fetch(`${BASE_URL}/competitions/${competitionId}/teams`, {
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
+                'X-Auth-Token': API_KEY
             }
         });
 
@@ -48,9 +39,9 @@ export const fetchTeamDetails = async (competitionId) => {
         const teamsWithSquad = await Promise.all(
             teamsData.teams.map(async (team) => {
                 try {
-                    const squadResponse = await fetch(`${API_URL}/teams/${team.id}`, {
+                    const squadResponse = await fetch(`${BASE_URL}/teams/${team.id}`, {
                         headers: {
-                            'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
+                            'X-Auth-Token': API_KEY
                         }
                     });
 
@@ -81,4 +72,4 @@ export const fetchTeamDetails = async (competitionId) => {
         console.error('Erreur API:', error);
         throw error;
     }
-};
+}; 
