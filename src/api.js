@@ -1,5 +1,5 @@
-const API_URL = "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/competitions";
-const BASE_URL = "https://cors-anywhere.herokuapp.com/https://api.football-data.org/v4/teams";
+const API_URL = "https://api.football-data.org/v4/competitions";
+const BASE_URL = "https://api.football-data.org/v4/teams";
 
 export const fetchMatches = async (dateFrom, dateTo) => {
     try {
@@ -8,8 +8,7 @@ export const fetchMatches = async (dateFrom, dateTo) => {
         const response = await fetch(API_URL, {
             method: 'GET',
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN,
-                'Origin': 'https://guillaumesere.github.io/fifa-score/'
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
         
@@ -36,8 +35,7 @@ export const fetchTeamDetails = async (competitionId) => {
         // Récupérer les équipes de la compétition
         const teamsResponse = await fetch(`${API_URL}/${competitionId}/teams`, {
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN,
-                 'Origin': 'https://guillaumesere.github.io/fifa-score/'
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
@@ -91,8 +89,7 @@ export const fetchTeamSquad = async (teamId) => {
     try {
         const response = await fetch(`${BASE_URL}/teams/${teamId}`, {
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN,
-                 'Origin': 'https://guillaumesere.github.io/fifa-score/'
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
@@ -123,8 +120,7 @@ export const fetchTeamSquadDetails = async (teamId) => {
     try {
         const response = await fetch(`${BASE_URL}/${teamId}/squad`, {
             headers: {
-                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN,
-                 'Origin': 'https://guillaumesere.github.io/fifa-score/'
+                'X-Auth-Token': process.env.REACT_APP_FOOTBALL_DATA_TOKEN
             }
         });
 
