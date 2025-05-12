@@ -121,7 +121,7 @@ const TeamDetails = () => {
                                         <div className="player-stats">
                                             <div className="stat">
                                                 <span className="stat-label">Âge</span>
-                                                <span className="stat-value">{player.age || 'N/A'}</span>
+                                                <span className="stat-value">{player.dateOfBirth || 'N/A'}</span>
                                             </div>
                                             <div className="stat">
                                                 <span className="stat-label">Nationalité</span>
