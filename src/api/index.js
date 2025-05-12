@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.football-data.org/v4';
+const BASE_URL = '/v4';
 
 export const fetchMatches = async (dateFrom, dateTo) => {
     try {
