@@ -98,6 +98,10 @@ const TeamDetails = () => {
                                 <span className="stat-label">Pays</span>
                                 <span className="stat-value">{team.area?.name || 'N/A'}</span>
                             </div>
+                            <div className="stat-item">
+                                <span className="stat-label">Adresse</span>
+                                <span className="stat-value">{team.address || 'N/A'}</span>
+                            </div>
                         </div>
 
                         <div className="squad-section">
